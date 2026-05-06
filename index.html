@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Как ты носишь обиду? — Квиз Натальи Прокофьевой</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary: #7c3aed;
+  --primary-soft: #ede9fe;
+  --accent: #ec4899;
+  --accent-soft: #fce7f3;
+  --text: #1e1035;
+  --text-muted: #6b7280;
+  --white: #ffffff;
+  --radius: 20px;
+  --shadow: 0 8px 40px rgba(124,58,237,0.13);
+  --shadow-sm: 0 2px 12px rgba(124,58,237,0.08);
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(145deg, #faf5ff 0%, #fdf2f8 40%, #eff6ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Decorative blobs */
+body::before, body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+body::before {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(167,139,250,0.18) 0%, transparent 70%);
+  top: -100px; right: -100px;
+}
+body::after {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(236,72,153,0.12) 0%, transparent 70%);
+  bottom: -80px; left: -80px;
+}
+
+.container {
+  width: 100%;
+  max-width: 560px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--white);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  padding: 40px 36px;
+  animation: fadeUp 0.45s ease both;
+}
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(24px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+/* ── SCREEN TRANSITIONS ── */
+.screen { display: none; }
+.screen.active { display: block; animation: fadeUp 0.4s ease both; }
+
+/* ── WELCOME SCREEN ── */
+.welcome-emoji {
+  font-size: 52px;
+  text-align: center;
+  margin-bottom: 16px;
+  animation: pulse 2.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}
+.welcome-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 100px;
+  margin-bottom: 16px;
+}
+.welcome-title {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.welcome-sub {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  text-align: center;
+  margin-bottom: 28px;
+}
+.welcome-meta {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.meta-item span { font-size: 16px; }
+
+/* ── BUTTONS ── */
+.btn {
+  display: block;
+  width: 100%;
+  padding: 16px 24px;
+  border: none;
+  border-radius: 16px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, #9333ea 100%);
+  color: white;
+  box-shadow: 0 6px 24px rgba(124,58,237,0.35);
+}
+.btn-primary:hover  { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(124,58,237,0.4); }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--primary-soft);
+  color: var(--primary);
+  font-size: 14px;
+  padding: 12px 20px;
+}
+.btn-outline:hover { background: var(--primary-soft); }
+
+.btn-result {
+  background: linear-gradient(135deg, #1e1035 0%, #4c1d95 100%);
+  color: white;
+  font-size: 15px;
+  box-shadow: 0 6px 24px rgba(30,16,53,0.25);
+  margin-bottom: 10px;
+}
+.btn-result:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(30,16,53,0.35); }
+
+.btn-secondary-result {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 15px;
+}
+.btn-secondary-result:hover { background: #fad7eb; }
+
+/* ── PROGRESS ── */
+.progress-wrap {
+  margin-bottom: 28px;
+}
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.progress-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.progress-count {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--primary);
+}
+.progress-bar-bg {
+  height: 6px;
+  background: var(--primary-soft);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border-radius: 100px;
+  transition: width 0.4s ease;
+}
+
+/* ── QUESTION ── */
+.question-text {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.45;
+  margin-bottom: 24px;
+}
+
+/* ── ANSWERS ── */
+.answers { display: flex; flex-direction: column; gap: 10px; }
+
+.answer-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  background: #fafafa;
+  border: 2px solid #f0eafa;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+  width: 100%;
+}
+.answer-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  transform: translateX(4px);
+}
+.answer-btn.selected {
+  background: linear-gradient(135deg, var(--primary) 0%, #9333ea 100%);
+  border-color: var(--primary);
+  color: white;
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px rgba(124,58,237,0.3);
+}
+.answer-letter {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.answer-btn.selected .answer-letter {
+  background: rgba(255,255,255,0.25);
+  color: white;
+}
+.answer-btn:hover:not(.selected) .answer-letter {
+  background: var(--primary);
+  color: white;
+}
+
+/* ── RESULT SCREEN ── */
+.result-icon {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  margin: 0 auto 20px;
+  animation: popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both;
+}
+@keyframes popIn {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+.result-badge {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.result-title {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 16px;
+  line-height: 1.3;
+}
+.result-desc {
+  font-size: 15px;
+  color: #374151;
+  line-height: 1.7;
+  text-align: center;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: #fafafa;
+  border-radius: 16px;
+  border-left: 3px solid var(--primary);
+}
+.result-tip {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  text-align: center;
+  margin-bottom: 28px;
+  font-style: italic;
+}
+.result-cta-label {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e9d5ff, transparent);
+  margin: 24px 0;
+}
+.author-block {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: var(--primary-soft);
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+.author-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.author-text { flex: 1; }
+.author-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+}
+.author-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ── QUIZ MAKER BANNER ── */
+.maker-banner {
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #1e1035, #4c1d95);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.maker-text {
+  font-size: 13px;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.4;
+}
+.maker-text strong { color: white; font-size: 14px; }
+.maker-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background: white;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+  border-radius: 100px;
+  white-space: nowrap;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.maker-btn:hover { background: var(--primary-soft); }
+
+@media (max-width: 480px) {
+  .card { padding: 28px 20px; }
+  .welcome-title { font-size: 22px; }
+  .question-text { font-size: 17px; }
+  .answer-btn { font-size: 14px; padding: 12px 14px; }
+  .maker-banner { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+
+    <!-- ══ WELCOME ══ -->
+    <div class="screen active" id="screen-welcome">
+      <div style="text-align:center; margin-bottom: 8px;">
+        <span class="welcome-badge">✨ Психологический квиз</span>
+      </div>
+      <div class="welcome-emoji">🌿</div>
+      <h1 class="welcome-title">Как ты носишь обиду?</h1>
+      <p class="welcome-sub">6 вопросов — и ты поймёшь свой тип реакции на боль. Без осуждения, только честно.</p>
+      <div class="welcome-meta">
+        <div class="meta-item"><span>⏱</span> 3 минуты</div>
+        <div class="meta-item"><span>🎯</span> 4 типа результата</div>
+        <div class="meta-item"><span>💜</span> Бесплатно</div>
+      </div>
+      <button class="btn btn-primary" onclick="startQuiz()">Начать квиз →</button>
+    </div>
+
+    <!-- ══ QUESTION ══ -->
+    <div class="screen" id="screen-question">
+      <div class="progress-wrap">
+        <div class="progress-top">
+          <span class="progress-label">Вопрос</span>
+          <span class="progress-count" id="progress-count">1 / 6</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+      <p class="question-text" id="question-text"></p>
+      <div class="answers" id="answers-container"></div>
+    </div>
+
+    <!-- ══ RESULT ══ -->
+    <div class="screen" id="screen-result">
+      <div class="result-icon" id="result-icon"></div>
+      <div class="result-badge">Твой тип</div>
+      <h2 class="result-title" id="result-title"></h2>
+      <div class="result-desc" id="result-desc"></div>
+      <p class="result-tip" id="result-tip"></p>
+
+      <div class="author-block">
+        <div class="author-avatar">🌸</div>
+        <div class="author-text">
+          <div class="author-name">Наталья Прокофьева</div>
+          <div class="author-sub">Психолог · Программа «Тихое освобождение»</div>
+        </div>
+      </div>
+
+      <div class="result-cta-label">Следующий шаг</div>
+      <a href="https://t.me/prosti_seby_bot" target="_blank" class="btn btn-result">
+        💜 Начать работу с обидой бесплатно
+      </a>
+      <a href="https://t.me/NataProkofeva?text=Хочу+узнать+подробнее+о+программе" target="_blank" class="btn btn-secondary-result">
+        ✉️ Написать Наталье напрямую
+      </a>
+
+      <div class="divider"></div>
+
+      <div class="maker-banner">
+        <div class="maker-text">
+          <strong>Хочешь такой квиз для себя?</strong><br>
+          AI делает за 5 минут — под твою нишу
+        </div>
+        <a href="https://t.me/kviz_generator_bot" target="_blank" class="maker-btn">2990₽ →</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    text: "Когда тебя сильно обижают, первая реакция — это:",
+    answers: [
+      { key: "A", text: "Ухожу в себя, замолкаю — и всё прокручиваю внутри" },
+      { key: "B", text: "Злость поднимается быстро — хочу высказать всё и сразу" },
+      { key: "C", text: "Делаю вид, что всё нормально, ничего не показываю" },
+      { key: "D", text: "Стараюсь успокоиться и разобраться, почему так вышло" }
+    ]
+  },
+  {
+    text: "Как долго ты обычно держишь обиду?",
+    answers: [
+      { key: "A", text: "Долго — даже если внешне простила, внутри помню" },
+      { key: "B", text: "Вспыхну, скажу — и как будто отпустила. Но иногда возвращается" },
+      { key: "C", text: "Не знаю даже — просто постепенно закрываюсь от человека" },
+      { key: "D", text: "Обычно неделю-две, потом честно отпускаю" }
+    ]
+  },
+  {
+    text: "Когда ты думаешь о человеке, который тебя обидел:",
+    answers: [
+      { key: "A", text: "Прокручиваю ситуацию снова и снова — ищу, где сама ошиблась" },
+      { key: "B", text: "Злость поднимается почти сразу, тело напрягается" },
+      { key: "C", text: "Чувствую пустоту или тяжёлую усталость" },
+      { key: "D", text: "Думаю об этом редко — мысли больше не тянут назад" }
+    ]
+  },
+  {
+    text: "Когда кто-то говорит тебе «прости» или «забудь, это было давно»:",
+    answers: [
+      { key: "A", text: "Только хуже — как будто обесценивают то, что я чувствую" },
+      { key: "B", text: "Раздражает: сначала сделали, а теперь я же должна отпускать?" },
+      { key: "C", text: "Соглашаюсь, говорю «ладно», но внутри ничего не меняется" },
+      { key: "D", text: "Помогает — я действительно могу отпустить после разговора" }
+    ]
+  },
+  {
+    text: "Что тебе сложнее всего, когда больно?",
+    answers: [
+      { key: "A", text: "Перестать возвращаться к этому в мыслях — голова не отпускает" },
+      { key: "B", text: "Не наговорить лишнего в момент злости — потом жалею" },
+      { key: "C", text: "Вообще понять, что именно я чувствую — внутри туман" },
+      { key: "D", text: "Обычно справляюсь, но бывают моменты, когда устаю" }
+    ]
+  },
+  {
+    text: "Если человек, который обидел, ушёл из твоей жизни:",
+    answers: [
+      { key: "A", text: "Он ушёл, а осадок остался — и это тоже обидно" },
+      { key: "B", text: "Когда не вижу — злость стихает. Но встретить неприятно" },
+      { key: "C", text: "Словно часть меня тоже ушла или закрылась" },
+      { key: "D", text: "Отпустила вместе с ним — и стало легче" }
+    ]
+  }
+];
+
+const RESULTS = {
+  A: {
+    icon: "🌊",
+    iconBg: "linear-gradient(135deg, #e0e7ff, #c7d2fe)",
+    title: "Хранитель памяти",
+    desc: "Ты носишь обиды глубоко и тихо. Они не шумят — они живут. Ты помнишь детали, анализируешь, ищешь смысл. Это не слабость — это способ защититься. Но эта тишина дорого стоит: силы уходят на то, чтобы удерживать внутри то, что просится наружу.",
+    tip: "Твоему типу помогает не «забыть», а разрешить себе почувствовать — безопасно, без осуждения."
+  },
+  B: {
+    icon: "🔥",
+    iconBg: "linear-gradient(135deg, #fee2e2, #fecaca)",
+    title: "Огненная реакция",
+    desc: "Твоя боль выходит быстро и ярко — иногда раньше, чем ты успеваешь подумать. После взрыва может быть стыд или опустошённость. Тело сбрасывает напряжение — но корень остаётся нетронутым. За этой яркостью часто прячется очень глубокая рана.",
+    tip: "Твоему типу важно научиться чувствовать боль до того, как она превратится в злость."
+  },
+  C: {
+    icon: "❄️",
+    iconBg: "linear-gradient(135deg, #dbeafe, #bfdbfe)",
+    title: "Замороженная боль",
+    desc: "Ты блокируешь обиду — не позволяешь ей быть. Внешне всё нормально, внутри — онемение или пустота. Это самый незаметный, но самый тяжёлый тип: когда даже ты сама не всегда понимаешь, что именно болит — и болит ли вообще.",
+    tip: "Твоему типу помогает сначала вернуть контакт с собой — почувствовать, что ты вообще есть."
+  },
+  D: {
+    icon: "🌱",
+    iconBg: "linear-gradient(135deg, #dcfce7, #bbf7d0)",
+    title: "Живое принятие",
+    desc: "Ты умеешь отпускать — не потому что не больно, а потому что внутри есть ресурс. Ты чувствуешь, переживаешь и идёшь дальше. Иногда и тебе бывает сложно — когда обида больше обычного или касается самого важного.",
+    tip: "У тебя хорошая база. Поддержка нужна, когда приходит что-то по-настоящему большое."
+  }
+};
+
+const answers = {};
+let currentQ = 0;
+
+function startQuiz() {
+  showScreen('screen-question');
+  renderQuestion(0);
+}
+
+function renderQuestion(index) {
+  currentQ = index;
+  const q = QUESTIONS[index];
+  const total = QUESTIONS.length;
+
+  document.getElementById('progress-count').textContent = `${index + 1} / ${total}`;
+  document.getElementById('progress-fill').style.width = `${(index / total) * 100}%`;
+  document.getElementById('question-text').textContent = q.text;
+
+  const container = document.getElementById('answers-container');
+  container.innerHTML = '';
+
+  q.answers.forEach(a => {
+    const btn = document.createElement('button');
+    btn.className = 'answer-btn' + (answers[index] === a.key ? ' selected' : '');
+    btn.innerHTML = `<span class="answer-letter">${a.key}</span><span>${a.text}</span>`;
+    btn.onclick = () => selectAnswer(index, a.key, btn);
+    container.appendChild(btn);
+  });
+}
+
+function selectAnswer(qIndex, key, btn) {
+  // Deselect all
+  document.querySelectorAll('.answer-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  answers[qIndex] = key;
+
+  // Move on after short delay
+  setTimeout(() => {
+    if (qIndex + 1 < QUESTIONS.length) {
+      renderQuestion(qIndex + 1);
+    } else {
+      showResult();
+    }
+  }, 380);
+}
+
+function showResult() {
+  const counts = { A: 0, B: 0, C: 0, D: 0 };
+  Object.values(answers).forEach(k => { if (counts[k] !== undefined) counts[k]++; });
+  const winner = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+  const r = RESULTS[winner];
+
+  const iconEl = document.getElementById('result-icon');
+  iconEl.textContent = r.icon;
+  iconEl.style.background = r.iconBg;
+
+  document.getElementById('result-title').textContent = r.title;
+  document.getElementById('result-desc').textContent = r.desc;
+  document.getElementById('result-tip').textContent = r.tip;
+
+  showScreen('screen-result');
+
+  // Fill progress bar to 100%
+  document.getElementById('progress-fill').style.width = '100%';
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
